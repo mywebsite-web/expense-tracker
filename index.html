@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Expense Tracker</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="Track spending, set budgets, and stay in control of your finances" />
+    <meta name="theme-color" content="#4CAF50" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Expense Tracker" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    
+    <!-- PWA Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/icon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="icons/icon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-180x180.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="icons/icon-152x152.png" />
+    <link rel="apple-touch-icon" sizes="144x144" href="icons/icon-144x144.png" />
+    <link rel="apple-touch-icon" sizes="120x120" href="icons/icon-120x120.png" />
+    <link rel="apple-touch-icon" sizes="114x114" href="icons/icon-114x114.png" />
+    <link rel="apple-touch-icon" sizes="76x76" href="icons/icon-76x76.png" />
+    <link rel="apple-touch-icon" sizes="72x72" href="icons/icon-72x72.png" />
+    <link rel="apple-touch-icon" sizes="60x60" href="icons/icon-60x60.png" />
+    <link rel="apple-touch-icon" sizes="57x57" href="icons/icon-57x57.png" />
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json" />
+    
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <main class="app">
+        <header class="app__header">
+            <h1>Expense Tracker</h1>
+            <p class="subtitle">Track spending, set budgets, and stay in control.</p>
+        </header>
+
+        <section class="cards">
+            <div class="card budget-card" aria-labelledby="budget-title">
+                <h2 id="budget-title">Budget</h2>
+                <form id="budget-form" class="budget-form" autocomplete="off">
+                    <label for="budget-input" class="sr-only">Set budget</label>
+                    <div class="budget-form__row">
+                        <input id="budget-input" type="number" inputmode="decimal" min="0" step="0.01" placeholder="Enter your budget" />
+                        <select id="currency-select" class="currency-select">
+                            <option value="USD">USD</option>
+                            <option value="EUR">EUR</option>
+                            <option value="GBP">GBP</option>
+                            <option value="CAD">CAD</option>
+                            <option value="AUD">AUD</option>
+                            
+                            <option value="JPY">JPY</option>
+                            <option value="CHF">CHF</option>
+                            <option value="CNY">CNY</option>
+                            <option value="INR">INR</option>
+                            <option value="NGN">NGN</option>
+                            <option value="BRL">BRL</option>
+                            <option value="MXN">MXN</option>
+                            <option value="KRW">KRW</option>
+                            <option value="SGD">SGD</option>
+                            <option value="HKD">HKD</option>
+                        </select>
+                        <button type="submit" class="btn">Set Budget</button>
+                    </div>
+                </form>
+
+                <div class="summary">
+                    <div class="summary__item">
+                        <span class="summary__label">Budget</span>
+                        <span id="summary-budget" class="summary__value">$0.00</span>
+                    </div>
+                    <div class="summary__item">
+                        <span class="summary__label">Spent</span>
+                        <span id="summary-spent" class="summary__value">$0.00</span>
+                    </div>
+                    <div class="summary__item">
+                        <span class="summary__label">Balance</span>
+                        <span id="summary-balance" class="summary__value">$0.00</span>
+                    </div>
+                </div>
+
+                <div class="progress" aria-label="Budget used">
+                    <div id="progress-fill" class="progress__fill" style="width: 0%"></div>
+                </div>
+                <p id="overspend-warning" class="warning" role="alert" aria-live="polite" hidden>
+                    You are over budget! Consider adjusting your spending.
+                </p>
+            </div>
+
+            <div class="card expense-card" aria-labelledby="expense-title">
+                <h2 id="expense-title">Add Expense</h2>
+                <form id="expense-form" class="expense-form" autocomplete="off">
+                    <div class="expense-form__grid">
+                        <div class="field">
+                            <label for="amount-input">Amount</label>
+                            <input id="amount-input" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00" required />
+                        </div>
+                        <div class="field">
+                            <label for="category-input">Category</label>
+                            <input id="category-input" type="text" maxlength="50" placeholder="e.g., Food, Transport, Bills..." required />
+                        </div>
+                        <div class="field field--full">
+                            <label for="description-input">Description</label>
+                            <input id="description-input" type="text" maxlength="120" placeholder="e.g., Grocery run at Local Market" />
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn--primary">Add Expense</button>
+                </form>
+            </div>
+        </section>
+
+        <section class="card list-card" aria-labelledby="list-title">
+            <div class="list-card__header">
+                <h2 id="list-title">Expenses</h2>
+                <span id="expense-count" class="muted">0 items</span>
+            </div>
+            <ul id="expense-list" class="expense-list" aria-live="polite"></ul>
+            <p id="empty-state" class="empty" hidden>No expenses yet. Add your first one above.</p>
+        </section>
+
+        <footer class="app__footer">
+            <p class="muted">Data is stored locally in your browser.</p>
+        </footer>
+    </main>
+
+    <script src="script.js"></script>
+    <noscript>
+        Please enable JavaScript to use this app.
+    </noscript>
+</body>
+</html>
+
