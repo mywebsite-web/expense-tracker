@@ -1,0 +1,30 @@
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+  }
+  
+  h1 {
+    color: darkgreen;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+  }
+  
+  th {
+    background: #f0f0f0;
+  }
+  
+  td, th {
+    padding: 8px;
+    text-align: left;
+  }
+  
+  a {
+    color: red;
+    text-decoration: none;
+  }
+  

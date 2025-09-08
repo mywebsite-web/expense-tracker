@@ -1,0 +1,113 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="mb-3">Dashboard</h1>
+
+<h2>Total Spent: ${{ total }}</h2>
+
+<!-- Expense Form -->
+<form method="post" action="{{ url_for('add_expense') }}" class="row g-2 mt-3">
+    <div class="col-6 col-md-3">
+        <input type="date" name="date" class="form-control" required>
+    </div>
+    <div class="col-6 col-md-3">
+        <input type="text" name="category" class="form-control" placeholder="Category" required>
+    </div>
+    <div class="col-6 col-md-2">
+        <input type="number" name="amount" step="0.01" class="form-control" placeholder="Amount" required>
+    </div>
+    <div class="col-6 col-md-3">
+        <input type="text" name="notes" class="form-control" placeholder="Notes">
+    </div>
+    <div class="col-12 col-md-1">
+        <button type="submit" class="btn btn-primary w-100">Add</button>
+    </div>
+</form>
+
+<!-- Expenses Table -->
+<div class="table-responsive mt-4">
+    <table class="table table-striped">
+        <thead class="table-dark">
+            <tr>
+                <th>Date</th>
+                <th>Category</th>
+                <th>Amount</th>
+                <th>Notes</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for expense in expenses %}
+            <tr>
+                <td>{{ expense.date }}</td>
+                <td>{{ expense.category }}</td>
+                <td>${{ expense.amount }}</td>
+                <td>{{ expense.notes }}</td>
+                <td>
+                    <form method="post" action="{{ url_for('delete_expense', expense_id=expense.id) }}" style="display:inline;">
+                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Reset Button -->
+<div class="d-flex justify-content-end mb-4">
+    <form method="post" action="{{ url_for('reset_expenses') }}">
+        <button type="submit" class="btn btn-warning">Reset All Expenses</button>
+    </form>
+</div>
+
+<!-- Charts -->
+<h3>Spending by Category</h3>
+<canvas id="expenseChart" height="200"></canvas>
+
+<h3 class="mt-4">Monthly Spending</h3>
+<canvas id="monthlyChart" height="200"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Pie Chart
+    const categories = {{ expenses | map(attribute='category') | list | tojson }};
+    const amounts = {{ expenses | map(attribute='amount') | list | tojson }};
+    const dataByCategory = {};
+    categories.forEach((cat, i) => {
+        dataByCategory[cat] = (dataByCategory[cat] || 0) + amounts[i];
+    });
+
+    new Chart(document.getElementById('expenseChart'), {
+        type: 'pie',
+        data: {
+            labels: Object.keys(dataByCategory),
+            datasets: [{
+                data: Object.values(dataByCategory),
+                backgroundColor: ['#4CAF50','#2196F3','#FF9800','#E91E63','#9C27B0']
+            }]
+        }
+    });
+
+    // Bar Chart
+    const monthlyLabels = {{ monthly_totals.keys() | list | tojson }};
+    const monthlyValues = {{ monthly_totals.values() | list | tojson }};
+    new Chart(document.getElementById('monthlyChart'), {
+        type: 'bar',
+        data: {
+            labels: monthlyLabels,
+            datasets: [{
+                label: 'Total Spent ($)',
+                data: monthlyValues,
+                backgroundColor: '#2196F3'
+            }]
+        },
+        options: { scales: { y: { beginAtZero: true } } }
+    });
+</script>
+{% endblock %}
+
+
+
+
